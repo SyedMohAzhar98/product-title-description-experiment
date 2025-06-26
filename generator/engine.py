@@ -7,16 +7,23 @@ from dotenv import load_dotenv
 GROQ_API_KEY = None
 try:
     import streamlit as _st
+    # DEBUG: show what keys Streamlit actually has
+    print("DEBUG: st.secrets keys =", list(_st.secrets.keys()))
     if "GROQ_API_KEY" in _st.secrets:
         GROQ_API_KEY = _st.secrets["GROQ_API_KEY"]
-except ImportError:
-    pass
+        print("DEBUG: Loaded GROQ_API_KEY from st.secrets")
+except Exception as e:
+    # will catch both ImportError and missing .secrets failures
+    print("DEBUG: could not load from st.secrets:", e)
 
 # 2) Fallback to .env
 if not GROQ_API_KEY:
     load_dotenv()
-    GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+    env_val = os.getenv("GROQ_API_KEY")
+    print("DEBUG: Env GROQ_API_KEY exists?", bool(env_val))
+    GROQ_API_KEY = env_val
 
+    
 # 3) Error if still missing
 if not GROQ_API_KEY:
     raise RuntimeError(
