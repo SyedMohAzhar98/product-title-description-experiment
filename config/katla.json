@@ -1,0 +1,15 @@
+{
+  "client_name": "KATLA",
+  "sections": [
+    "Product Details",
+    "Design elements",
+    "About the Fabric"
+  ],
+  "list_sections": ["Design elements"],
+  "title_instructions": "ALL CAPS, up to {title_word_limit} words, highlight main feature. Wrap title in **bold**.",
+  "subtitle_instructions": "Brief phrase (up to {subtitle_word_limit} words) with fabric and type. Render subtitle in plain text.",
+  "global_instructions": "Write with earthy, sustainable tone. Integrate tags naturally.",
+  "title_word_limit": 5,
+  "subtitle_word_limit": 6,
+  "description_word_limit": 150
+}

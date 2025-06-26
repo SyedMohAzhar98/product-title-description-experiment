@@ -1,0 +1,16 @@
+{
+  "client_name": "ZARA",
+  "sections": [
+    "Short Description",
+    "Composition",
+    "Care",
+    "Origin"
+  ],
+  "list_sections": [],
+  "title_instructions": "Title Case, up to {title_word_limit} words, fashion-forward. Wrap title in **bold**.",
+  "subtitle_instructions": "",
+  "global_instructions": "Write concise, trendy copy. Integrate tags naturally.",
+  "title_word_limit": 6,
+  "subtitle_word_limit": 0,
+  "description_word_limit": 100
+}

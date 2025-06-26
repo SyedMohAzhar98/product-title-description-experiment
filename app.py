@@ -1,149 +1,71 @@
 import streamlit as st
-import requests
-import json
-import os
+import json, os
+from generator.config_loader import load_client_config
+from generator.example_loader import load_client_examples, get_example_for_category
+from generator.engine import generate_content
 
-from dotenv import load_dotenv
-
-
-
-if st.secrets._secrets: 
-    GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
-else:
-    # Load from .env for local development
-    from dotenv import load_dotenv
-    load_dotenv()
-    GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-
-
-if not GROQ_API_KEY:
-    st.error("GROQ_API_KEY not found. Please set it in .env (for local) or Streamlit Secrets (for deployed).")
-    st.stop()
-
-GROQ_MODEL = "llama3-70b-8192"
-
-PRODUCTS_JSON = "products.json"
-
-# Helper functions to load/save product data
+DATA_PATH = "data/products.json"
 
 def load_products():
-    if not os.path.exists(PRODUCTS_JSON):
+    if not os.path.exists(DATA_PATH):
         return {"products": []}
-    with open(PRODUCTS_JSON, "r") as f:
-        return json.load(f)
+    return json.load(open(DATA_PATH, encoding="utf-8"))
 
-def save_products(data):
-    with open(PRODUCTS_JSON, "w") as f:
-        json.dump(data, f, indent=2)
+st.set_page_config(page_title="Content Generator", layout="wide")
+st.title("🛍️ Multi-Client Product Generator")
 
-def generate_product_copy(category, tags, brand_tone):
-    prompt = f"""
-Generate a Shopify product title and description.
-
-Product Category: {category}
-Tags: {", ".join(tags)}
-Brand Tone: {brand_tone}
-
-Instructions:
-- Title must be under 80 characters.
-- Description should naturally include the tags.
-- Highlight fabric, style, and best use-case.
-- Keep the brand tone in mind: {brand_tone}.
-- Use the category and tags only to create the content.
-"""
-
-    headers = {
-        "Authorization": f"Bearer {GROQ_API_KEY}",
-        "Content-Type": "application/json"
-    }
-
-    payload = {
-        "model": GROQ_MODEL,
-        "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.7
-    }
-
-    response = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
-    if response.status_code == 200:
-        return response.json()["choices"][0]["message"]["content"]
-    else:
-        return f"Error {response.status_code}: {response.text}"
-
-
-products_data = load_products()
-products = products_data.get("products", [])
-
-st.set_page_config(page_title="Dynamic Shopify Content Generator", layout="centered")
-st.title("Product Title & Description Generator")
-
-if not products:
-    st.error("No products found in products.json. Please add some and restart.")
+data = load_products()
+if not data["products"]:
+    st.error("No products found.")
     st.stop()
 
+# Sidebar: client, category, tags, tone, limits
+clients = sorted({p["client"] for p in data["products"]})
+client = st.sidebar.selectbox("Client", clients)
+client_prods = [p for p in data["products"] if p["client"] == client]
+category = st.sidebar.selectbox("Category", sorted({p["category"] for p in client_prods}))
+product = next(p for p in client_prods if p["category"] == category)
 
-product_names = [p["name"] for p in products]
-selected_product_name = st.sidebar.selectbox("Select Product", product_names)
-product_idx = product_names.index(selected_product_name)
-product = products[product_idx]
+# Tags & Tone
+tags = st.sidebar.text_area("Tags (comma-separated)", ", ".join(product['tags']))
+product['tags'] = [t.strip() for t in tags.split(",") if t.strip()]
+tone = st.sidebar.text_input("Tone", value=product['brand_tones'][0])
+product['brand_tones'] = [tone]
 
+# Word-limit overrides
+config = load_client_config(client)
+title_limit = st.sidebar.number_input("Title words", 1, 20, config['title_word_limit'])
+sub_limit   = st.sidebar.number_input("Subtitle words", 0, 20, config['subtitle_word_limit'])
+desc_limit  = st.sidebar.number_input("Description words", 20, 500, config['description_word_limit'])
+config.update({
+    'title_word_limit': title_limit,
+    'subtitle_word_limit': sub_limit,
+    'description_word_limit': desc_limit
+})
 
-st.markdown("### Product Category")
-st.text_input("Category", value=product["category"], key="category", disabled=True)
+examples = load_client_examples(client)
+example = get_example_for_category(examples, category)
 
-
-st.markdown("### Tags (comma-separated)")
-tags_str = st.text_area("Tags", value=", ".join(product["tags"]), height=120)
-
-
-st.markdown("### Brand Tone")
-selected_tone = st.selectbox("Select Brand Tone", product.get("brand_tones", []))
-
-
-new_tone = st.text_input("Add New Brand Tone")
-if st.button("Add Tone"):
-    nt = new_tone.strip()
-    if nt and nt not in product["brand_tones"]:
-        product["brand_tones"].append(nt)
-        selected_tone = nt
-        st.success(f"Added new tone '{nt}'")
-        # Save change immediately
-        products[product_idx] = product
-        save_products(products_data)
-        st.experimental_rerun()
-    elif nt in product["brand_tones"]:
-        st.info(f"Tone '{nt}' already exists.")
+# Generate
+if st.button("Generate"):
+    with st.spinner("Calling LLM…"):
+        raw = generate_content(product, config, example)
+    # parse JSON
+    try:
+        result = json.loads(raw)
+    except json.JSONDecodeError:
+        st.error("❌ LLM did not return valid JSON:")
+        st.code(raw)
     else:
-        st.warning("Enter a valid tone.")
-
-
-if st.button("Save Tags & Tone"):
-    # Save tags (split by comma)
-    new_tags = [t.strip() for t in tags_str.split(",") if t.strip()]
-    product["tags"] = new_tags
-    product["brand_tones"] = product.get("brand_tones", [])
-
-    if selected_tone not in product["brand_tones"]:
-        product["brand_tones"].append(selected_tone)
-    # Save to JSON
-    products[product_idx] = product
-    save_products(products_data)
-    st.success("Product data saved!")
-
-st.markdown("---")
-
-
-if st.button("Generate Title & Description"):
-    with st.spinner("Generating content from Groq..."):
-        result = generate_product_copy(
-            product["category"],
-            product["tags"],
-            selected_tone
-        )
-    if result:
-        parts = result.split("\n", 1)
-        title = parts[0].strip()
-        description = parts[1].strip() if len(parts) > 1 else ""
-        st.markdown("### Generated Title")
-        st.success(title)
-        st.markdown("### Generated Description")
-        st.write(description)
+        # display
+        st.markdown(f"**{result['title']}**")
+        if result.get('subtitle'):
+            st.markdown(result['subtitle'])
+        st.markdown("### Product Details")
+        st.write(result['productDetails'])
+        if result.get('designElements'):
+            st.markdown("### Design elements")
+            for key, val in result['designElements'].items():
+                st.write(f"{key}: {val}")
+        st.markdown("### About the Fabric")
+        st.write(result['aboutTheFabric'])
