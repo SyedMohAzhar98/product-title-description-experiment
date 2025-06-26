@@ -72,17 +72,20 @@ CONSTRAINTS:
 • Subtitle ≤ {config['subtitle_word_limit']} words  
 • Each description ≤ {config['description_word_limit']} words  
 • designElements keys & values must come from Tags (1–4 words each)
+• Output MUST be written in {product.get('language', 'English')}
 
 INPUT:
 Category: {product['category']}
 Tags: {', '.join(product['tags'])}
 Tone: {product['brand_tones'][0]}
+Language: {product.get('language', 'English')}
 
 EXAMPLE OUTPUT:
 {example_json}
 
 Respond **only** with the JSON object—no extra text.
 """
+
 
 def generate_content(product: dict, config: dict, example: dict) -> str:
     prompt = build_prompt(product, config, example)

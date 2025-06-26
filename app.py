@@ -39,6 +39,11 @@ st.sidebar.markdown("**Tags**")
 tags_str = st.sidebar.text_area("(comma-separated)", value=", ".join(product['tags']), height=100)
 product['tags'] = [t.strip() for t in tags_str.split(",") if t.strip()]
 
+# Language selector
+st.sidebar.markdown("---")
+language = st.sidebar.selectbox("Language", ["English", "Icelandic"], index=0)
+product['language'] = language
+
 # Editable Tone
 st.sidebar.markdown("---")
 st.sidebar.markdown("**Brand Tone**")
