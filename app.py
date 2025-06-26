@@ -1,8 +1,15 @@
+# ---------- app.py ----------
 import streamlit as st
 import json, os
 from generator.config_loader import load_client_config
 from generator.example_loader import load_client_examples, get_example_for_category
-from generator.engine import generate_content
+
+# Early import check for API key errors
+try:
+    from generator.engine import generate_content
+except RuntimeError as e:
+    st.error(str(e))
+    st.stop()
 
 DATA_PATH = "data/products.json"
 
@@ -16,56 +23,83 @@ st.title("🛍️ Multi-Client Product Generator")
 
 data = load_products()
 if not data["products"]:
-    st.error("No products found.")
+    st.error("No products found in data/products.json")
     st.stop()
 
-# Sidebar: client, category, tags, tone, limits
+# Sidebar controls
 clients = sorted({p["client"] for p in data["products"]})
 client = st.sidebar.selectbox("Client", clients)
 client_prods = [p for p in data["products"] if p["client"] == client]
 category = st.sidebar.selectbox("Category", sorted({p["category"] for p in client_prods}))
 product = next(p for p in client_prods if p["category"] == category)
 
-# Tags & Tone
-tags = st.sidebar.text_area("Tags (comma-separated)", ", ".join(product['tags']))
-product['tags'] = [t.strip() for t in tags.split(",") if t.strip()]
+# Editable Tags
+st.sidebar.markdown("---")
+st.sidebar.markdown("**Tags**")
+tags_str = st.sidebar.text_area("(comma-separated)", value=", ".join(product['tags']), height=100)
+product['tags'] = [t.strip() for t in tags_str.split(",") if t.strip()]
+
+# Editable Tone
+st.sidebar.markdown("---")
+st.sidebar.markdown("**Brand Tone**")
 tone = st.sidebar.text_input("Tone", value=product['brand_tones'][0])
 product['brand_tones'] = [tone]
 
 # Word-limit overrides
+st.sidebar.markdown("---")
+st.sidebar.markdown("**Word Limits**")
 config = load_client_config(client)
-title_limit = st.sidebar.number_input("Title words", 1, 20, config['title_word_limit'])
-sub_limit   = st.sidebar.number_input("Subtitle words", 0, 20, config['subtitle_word_limit'])
-desc_limit  = st.sidebar.number_input("Description words", 20, 500, config['description_word_limit'])
+title_limit = st.sidebar.number_input("Title max words", min_value=1, value=config['title_word_limit'])
+sub_limit = st.sidebar.number_input("Subtitle max words", min_value=0, value=config['subtitle_word_limit'])
+desc_limit = st.sidebar.number_input("Description max words", min_value=20, value=config['description_word_limit'])
 config.update({
     'title_word_limit': title_limit,
     'subtitle_word_limit': sub_limit,
     'description_word_limit': desc_limit
 })
 
+# Display selected metadata
+st.markdown(f"**Client:** {client}")
+st.markdown(f"**Category:** {product['category'].title()}")
+st.markdown(f"**Tags:** {', '.join(product['tags'])}")
+st.markdown(f"**Tone:** {tone}")
+
+# Load examples and config
 examples = load_client_examples(client)
 example = get_example_for_category(examples, category)
 
-# Generate
-if st.button("Generate"):
+# Generate and render
+if st.button("Generate Title & Description"):
     with st.spinner("Calling LLM…"):
         raw = generate_content(product, config, example)
-    # parse JSON
+    # Parse JSON
     try:
         result = json.loads(raw)
-    except json.JSONDecodeError:
+    except Exception:
         st.error("❌ LLM did not return valid JSON:")
         st.code(raw)
     else:
-        # display
-        st.markdown(f"**{result['title']}**")
-        if result.get('subtitle'):
-            st.markdown(result['subtitle'])
-        st.markdown("### Product Details")
-        st.write(result['productDetails'])
-        if result.get('designElements'):
+        # Title & Subtitle
+        st.markdown(f"**{result.get('title','')}**")
+        subtitle = result.get('subtitle','')
+        if subtitle:
+            st.markdown(subtitle)
+
+        # Product Details
+        details = result.get('productDetails','')
+        if details:
+            st.markdown("### Product Details")
+            st.write(details)
+
+        # Design Elements
+        design = result.get('designElements', {})
+        if design:
             st.markdown("### Design elements")
-            for key, val in result['designElements'].items():
+            for key, val in design.items():
                 st.write(f"{key}: {val}")
-        st.markdown("### About the Fabric")
-        st.write(result['aboutTheFabric'])
+
+        # About the Fabric
+        fabric = result.get('aboutTheFabric','')
+        if fabric:
+            st.markdown("### About the Fabric")
+            st.write(fabric)

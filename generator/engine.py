@@ -3,8 +3,23 @@ import requests
 import json
 from dotenv import load_dotenv
 
-load_dotenv()
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+
+try:
+    import streamlit as _st
+    GROQ_API_KEY = _st.secrets.get("GROQ_API_KEY")
+except ImportError:
+    GROQ_API_KEY = None
+
+if not GROQ_API_KEY:
+    load_dotenv()
+    GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+
+if not GROQ_API_KEY:
+    raise RuntimeError(
+        "⚠️ GROQ_API_KEY not set. "
+        "Please add it to Streamlit Secrets (for deployed) or .env (for local)."
+    )
+
 GROQ_MODEL = "llama3-70b-8192"
 
 def call_groq(prompt: str) -> str:
@@ -17,9 +32,14 @@ def call_groq(prompt: str) -> str:
         "messages": [{"role": "user", "content": prompt}],
         "temperature": 0.7
     }
-    r = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
-    r.raise_for_status()
-    return r.json()["choices"][0]["message"]["content"]
+    resp = requests.post(
+        "https://api.groq.com/openai/v1/chat/completions",
+        headers=headers,
+        json=payload,
+        timeout=30
+    )
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
 
 def build_prompt(product: dict, config: dict, example: dict) -> str:
     # JSON schema we expect back
