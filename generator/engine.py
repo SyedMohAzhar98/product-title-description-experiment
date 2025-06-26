@@ -3,21 +3,26 @@ import requests
 import json
 from dotenv import load_dotenv
 
-
+# 1) Try Streamlit secrets
+GROQ_API_KEY = None
 try:
     import streamlit as _st
-    GROQ_API_KEY = _st.secrets.get("GROQ_API_KEY")
+    if "GROQ_API_KEY" in _st.secrets:
+        GROQ_API_KEY = _st.secrets["GROQ_API_KEY"]
 except ImportError:
-    GROQ_API_KEY = None
+    pass
 
+# 2) Fallback to .env
 if not GROQ_API_KEY:
     load_dotenv()
     GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
+# 3) Error if still missing
 if not GROQ_API_KEY:
     raise RuntimeError(
         "⚠️ GROQ_API_KEY not set. "
-        "Please add it to Streamlit Secrets (for deployed) or .env (for local)."
+        "Please add it to Streamlit Secrets (key = GROQ_API_KEY, value = your_key) "
+        "or to a local .env file."
     )
 
 GROQ_MODEL = "llama3-70b-8192"
