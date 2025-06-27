@@ -1,6 +1,7 @@
 import os
 import requests
 import json
+import openai
 from dotenv import load_dotenv
 
 # 1) Try Streamlit secrets
@@ -34,24 +35,34 @@ if not GROQ_API_KEY:
 
 GROQ_MODEL = "llama3-70b-8192"
 
+
+OPENAI_API_KEY = None
+
+
+openai.api_key = OPENAI_API_KEY
+GPT4O_MODEL = "gpt-4o"
+
+
 def call_groq(prompt: str) -> str:
-    headers = {
-        "Authorization": f"Bearer {GROQ_API_KEY}",
-        "Content-Type": "application/json"
-    }
-    payload = {
-        "model": GROQ_MODEL,
-        "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.7
-    }
-    resp = requests.post(
-        "https://api.groq.com/openai/v1/chat/completions",
-        headers=headers,
-        json=payload,
-        timeout=30
-    )
+    headers = { "Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json" }
+    payload = { "model": GROQ_MODEL, "messages":[{"role":"user","content":prompt}], "temperature": 0.7 }
+    resp = requests.post("https://api.groq.com/openai/v1/chat/completions",
+                         headers=headers, json=payload, timeout=30)
     resp.raise_for_status()
+    # content is already a JSON-formatted string
     return resp.json()["choices"][0]["message"]["content"]
+
+def call_gpt4o(prompt: str) -> str:
+    try:
+        resp = openai.ChatCompletion.create(
+            model=GPT4O_MODEL,
+            messages=[{"role":"user","content":prompt}],
+            temperature=0.7,
+        )
+    except Exception as e:
+        raise RuntimeError(f"GPT-4o call failed: {e}")
+    # content is already a JSON-formatted string
+    return resp.choices[0].message.content
 
 def build_prompt(product: dict, config: dict, example: dict) -> str:
     # JSON schema we expect back
@@ -62,31 +73,49 @@ def build_prompt(product: dict, config: dict, example: dict) -> str:
       "designElements": {"<key>": "<value>"},
       "aboutTheFabric": "string"
     }
+    ti = config["title_instructions"].format(**config)
+    si = config["subtitle_instructions"].format(**config) if config.get("subtitle_instructions") else ""
+    gi = config["global_instructions"]
+    
     example_json = json.dumps(example, indent=2) if example else "{}"
     return f"""
-Generate product copy for {config['client_name']} and **output ONLY valid JSON** matching this schema:
-{json.dumps(schema, indent=2)}
+You are writing for {config['client_name']} using an {gi} tone.
 
-CONSTRAINTS:
+TITLE INSTRUCTIONS:
+{ti}
+
+SUBTITLE INSTRUCTIONS:
+{si}
+
+GLOBAL CONSTRAINTS:
 • Title ≤ {config['title_word_limit']} words  
 • Subtitle ≤ {config['subtitle_word_limit']} words  
-• Each description ≤ {config['description_word_limit']} words  
-• designElements keys & values must come from Tags (1–4 words each)
-• Output MUST be written in {product.get('language', 'English')}
+• Description ≤ {config['description_word_limit']} words  
+• designElements keys/values from Tags (1–4 words)
 
 INPUT:
 Category: {product['category']}
 Tags: {', '.join(product['tags'])}
 Tone: {product['brand_tones'][0]}
-Language: {product.get('language', 'English')}
+Language: {product['language']}
 
 EXAMPLE OUTPUT:
 {example_json}
 
-Respond **only** with the JSON object—no extra text.
+Respond ONLY with a VALID JSON object matching this schema:
+{json.dumps(schema, indent=2)}
 """
 
-
-def generate_content(product: dict, config: dict, example: dict) -> str:
+def generate_content(product: dict, config: dict, example: dict) -> tuple[str,str]:
     prompt = build_prompt(product, config, example)
-    return call_groq(prompt)
+    lang = product.get("language","english").lower()
+    
+    if lang == "english":
+        result = call_groq(prompt)
+        model = "GROQ LLaMA 3 70B"
+    else:
+        result = call_gpt4o(prompt)
+        model = "OpenAI GPT-4o"
+    
+    return result, model
+

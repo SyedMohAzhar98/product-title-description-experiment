@@ -44,6 +44,9 @@ st.sidebar.markdown("---")
 language = st.sidebar.selectbox("Language", ["English", "Icelandic"], index=0)
 product['language'] = language
 
+model_note = "GROQ LLaMA 3 70B" if language == "English" else "OpenAI GPT-4o"
+st.sidebar.markdown(f"**↳ This language will use:** {model_note}")
+
 # Editable Tone
 st.sidebar.markdown("---")
 st.sidebar.markdown("**Brand Tone**")
@@ -76,15 +79,17 @@ example = get_example_for_category(examples, category)
 # Generate and render
 if st.button("Generate Title & Description"):
     with st.spinner("Calling LLM…"):
-        raw = generate_content(product, config, example)
+        raw, used_model = generate_content(product, config, example)
     # Parse JSON
     try:
         result = json.loads(raw)
     except Exception:
         st.error("❌ LLM did not return valid JSON:")
         st.code(raw)
+        st.stop()
     else:
         # Title & Subtitle
+        st.info(f"Using model: **{used_model}**")
         st.markdown(f"**{result.get('title','')}**")
         subtitle = result.get('subtitle','')
         if subtitle:

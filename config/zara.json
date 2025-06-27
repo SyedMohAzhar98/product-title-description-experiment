@@ -7,7 +7,7 @@
     "Origin"
   ],
   "list_sections": [],
-  "title_instructions": "Title Case, up to {title_word_limit} words, fashion-forward. Wrap title in **bold**.",
+  "title_instructions": "Title Case, up to {title_word_limit} words, fashion-forward.",
   "subtitle_instructions": "",
   "global_instructions": "Write concise, trendy copy. Integrate tags naturally.",
   "title_word_limit": 6,
