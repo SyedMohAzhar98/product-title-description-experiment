@@ -33,11 +33,21 @@ client_prods = [p for p in data["products"] if p["client"] == client]
 category = st.sidebar.selectbox("Category", sorted({p["category"] for p in client_prods}))
 product = next(p for p in client_prods if p["category"] == category)
 
-# Editable Tags
+# Editable Features
 st.sidebar.markdown("---")
-st.sidebar.markdown("**Tags**")
-tags_str = st.sidebar.text_area("(comma-separated)", value=", ".join(product['tags']), height=100)
-product['tags'] = [t.strip() for t in tags_str.split(",") if t.strip()]
+st.sidebar.markdown("**Features (key:value)**")
+feat_lines = [f"{k}:{v}" for k,v in product.get("features", {}).items()]
+feat_str = st.sidebar.text_area(
+    "(one per line, format key:value)",
+    value="\n".join(feat_lines),
+    height=200
+)
+new_feats = {}
+for line in feat_str.splitlines():
+    if ":" in line:
+        k, v = line.split(":", 1)
+        new_feats[k.strip()] = v.strip()
+product['features'] = new_feats
 
 # Language selector
 st.sidebar.markdown("---")
@@ -71,7 +81,10 @@ with open(config_path, "w", encoding="utf-8") as f:
 # Display selected metadata
 st.markdown(f"**Client:** {client}")
 st.markdown(f"**Category:** {product['category'].title()}")
-st.markdown(f"**Tags:** {', '.join(product['tags'])}")
+st.markdown("**Features:**")
+for k, v in product.get("features", {}).items():
+    st.markdown(f"- **{k}**: {v}")
+
 
 # Load examples and config
 examples = load_client_examples(client)

@@ -150,13 +150,16 @@ def build_prompt(product: dict, config: dict, example: dict) -> str:
     parts.append("You are a product‑copywriter. OUTPUT ONLY valid JSON—no extra text.")
     if lang == "icelandic" and lang_instr:
         parts.append(lang_instr.strip())
-    parts.append("Leverage the `category` and all provided `tags` to inspire every part of your copywriting omit only tags that truly don’t fit.")
+    parts.append("Leverage the `category` and all provided `features` to inspire every part of your copy—omit only those that truly don’t fit.")
     parts.append("Use only the metadata below to create your title, description, and all other sections.")
 
     # 1. INPUT METADATA
     parts.append("### INPUT METADATA")
     parts.append(f"- Category: {product['category']}")
-    parts.append(f"- Tags: [{', '.join(product['tags'])}]")
+      # Features
+    parts.append("### FEATURES")
+    for feat_name, feat_val in product.get("features", {}).items():
+        parts.append(f"- {feat_name}: {feat_val}")
 
     # 2. Constraints/Instructions
     parts.append("### CONTENT CONSTRAINTS")

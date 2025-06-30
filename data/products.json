@@ -2,150 +2,49 @@
   "products": [
     {
       "client": "KATLA",
-      "category": "hoodie",
-      "tags": [
-        "organic cotton",
-        "buttery soft",
-        "relaxed fit",
-        "made to order",
-        "sustainable dye",
-        "unisex",
-        "pullover",
-        "eco-friendly finish",
-        "machine washable",
-        "breathable",
-        "GOTS certified",
-        "durable stitching",
-        "minimalist design"
-      ]
-    },
-    {
-      "client": "KATLA",
-      "category": "sweatsuit",
-      "tags": [
-        "seaweed blend",
-        "antioxidant rich",
-        "cozy",
-        "regenerative",
-        "Icelandic seaweed",
-        "organic cotton",
-        "phytonutrients",
-        "upcycled fibers",
-        "winter weight",
-        "soft fleece lining",
-        "health benefits",
-        "breathable fabric"
-      ]
-    },
-    {
-      "client": "KATLA",
-      "category": "jumpsuit",
-      "tags": [
-        "vegan silk",
-        "sleek fit",
-        "minimalist",
-        "sustainable",
-        "day-to-night",
-        "machine washable",
-        "lightweight",
-        "adjustable straps",
-        "fluid drape",
-        "eco-friendly finish",
-        "all-season"
-      ]
-    },
-    {
-      "client": "KATLA",
-      "category": "skirt",
-      "tags": [
-        "washed cupro",
-        "maxi length",
-        "day-to-evening",
-        "slip skirt",
-        "sustainable by-product",
-        "unique tracking",
-        "resale program",
-        "recycling program",
-        "USA made",
-        "straight hemline",
-        "relaxed fit"
-      ]
-    },
-    {
-      "client": "KATLA",
-      "category": "tank",
-      "tags": [
-        "silky modal",
-        "lightweight",
-        "cropped fit",
-        "sustainably sourced",
-        "day-to-night",
-        "layering piece",
-        "breathable",
-        "low-impact dye",
-        "soft touch",
-        "minimal seams"
-      ]
+      "category": "blazer",
+      "features": {
+        "Lengd erma": "Langar ermar",
+        "Ermastíll": "Ísetter ermar",
+        "Axlir": "Axlapúðar",
+        "Hálsmál": "V kragi",
+        "Kragi": "Smokingkragi",
+        "Framhluti": "Opin/n að framan",
+        "Tegund vasa": "Hliðarvasi",
+        "lengd": "Mjaðmir",
+        "Faldur": "Opinn rúnaður",
+        "Mynsturstærð": "Lítið",
+        "Mynstur": "Blóma",
+        "Tilefni": "Skrifstofufatnaður",
+        "Efni": "Pólýester",
+        "Vefnaður": "Ofið",
+        "Teygjustig": "Engin teygja",
+        "Þvottaleiðbeiningar": "kaldur handþvottur",
+        "Stærð": "venjuleg stærð",
+        "Notkunareiginleiki": "létt"
+      }
     },
     {
       "client": "EMOM",
-      "category": "modena buxur",
-      "tags": [
-        "mjúkt bómullarefni",
-        "anda vel",
-        "endingargóðar",
-        "renndur vasi",
-        "teygjanlegar",
-        "þægilegar",
-        "henta fyrir æfingu",
-        "henta hversdags",
-        "henta yfir leggings",
-        "henta yfir stuttbuxur",
-        "halda sér vel"
-      ]
-    },
-    {
-      "client": "EMOM",
-      "category": "buxur og stuttbuxur",
-      "tags": [
-        "Aðsniðið",
-        "Meðalháar",
-        "Hátt mittisbelti",
-        "Blaktvasar",
-        "Síðar",
-        "Beinn",
-        "Sport",
-        "Bómull",
-        "Ofið",
-        "Engin teygja",
-        "kaldur handþvottur",
-        "venjuleg stærð"
-      ]
-    },
-     {
-      "client": "EMOM",
-      "category": "samfestingar",
-      "tags": [
-        "Aðsniðið",
-        "V hálsmál",
-        "Beinar",
-        "Þröngur í mitti",
-        "Sequins",
-        "Op að aftan með hnappi",
-        "Falinn rennilás",
-        "Opið bak ",
-        "Ökkla",
-        "Beinn",
-        "Formlegt",
-        "Partý eða kvöldfatnaður",
-        "Prjónað",
-        "Pólýester",
-        "Mjög teygjanlegt",
-        "kaldur handþvottur",
-        "venjuleg stærð"
-
-      ]
+      "category": "top",
+      "features": {
+        "Lengd erma": "Langar ermar",
+        "Ermastíll": "Ísetter ermar",
+        "Axlir": "Púff eiginleiki",
+        "Hálsmál": "Skorinn kragi",
+        "Framhluti": "Hneppt",
+        "Ermalíning": "Hneppt",
+        "Faldur": "Styttri að framan",
+        "Mynsturstærð": "Lítið",
+        "Mynstur": "Dýraprent",
+        "Tilefni": "Formlegt",
+        "Partý eða kvöldfatnaður": "Partý eða kvöldfatnaður",
+        "Efni": "Pólýester",
+        "Vefnaður": "Ofið",
+        "Teygjustig": "Engin teygja",
+        "Þvottaleiðbeiningar": "kaldur handþvottur",
+        "Stærð": "venjuleg stær"
+      }
     }
   ]
 }
- 
