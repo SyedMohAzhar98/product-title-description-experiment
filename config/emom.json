@@ -1,0 +1,30 @@
+{
+  "client_name": "EMOM",
+  "brand_description": "EMOM is an Icelandic active‑wear brand specializing in comfortable, performance‑driven cotton pants for both everyday wear and workouts.",
+  "sections": [
+    "productDescription",
+    "keyFeatures"
+  ],
+
+  "schema": {
+    "title": "string",
+    "productDescription": "string",
+    "keyFeatures": {"<key>": "<value>"}
+  },
+
+  "instructions": {
+    "title":        "ALL CAPS, highlight main feature.",
+    "productDescription":
+                     "Write a concise description (up to {limits[productDescription]} words).",
+    "":  "List the key features as bullet points (1–4 words each)."
+  },
+
+  "limits": {
+    "title": 7,
+    "productDescription": 150,
+    "keyFeatures": 5
+  },
+
+  "language_instructions":
+                    "Use Iceladic Language with proper Icelandic grammar and avoid anglicisms."
+}

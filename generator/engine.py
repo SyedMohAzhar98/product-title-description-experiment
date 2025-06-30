@@ -127,51 +127,67 @@ def call_gpt4o_mini(prompt: str) ->str:
 
     return raw
 
-
 def build_prompt(product: dict, config: dict, example: dict) -> str:
-    # JSON schema we expect back
-    schema = {
-      "title": "string",
-      "subtitle": "string",
-      "productDetails": "string",
-      "designElements": {"<key>": "<value>"},
-      "aboutTheFabric": "string"
-    }
-    ti = config["title_instructions"].format(**config)
-    si = config["subtitle_instructions"].format(**config) if config.get("subtitle_instructions") else ""
-    gi = config["global_instructions"]
-    
-    example_json = json.dumps(example, indent=2) if example else "{}"
-    return f"""
-You are writing for {config['client_name']} using an {gi} tone.
+    schema       = config["schema"]
+    sections     = config.get("sections", [])
+    client   = config.get("client_name", "")
+    instructions = config.get("instructions", {})
+    limits       = config.get("limits", {})
+    lang_instr   = config.get("language_instructions", "")
+    brand_desc   = config.get("brand_description", "")
+    lang         = product["language"].lower()
 
-TITLE INSTRUCTIONS:
-{ti}
+    parts: list[str] = []
 
-SUBTITLE INSTRUCTIONS:
-{si}
+    # 0. Brand Description + Role
+    if brand_desc:
+        parts.append(brand_desc.strip())
+    parts.append("You are a product‑copywriter. OUTPUT ONLY valid JSON—no extra text.")
+    if lang == "icelandic" and lang_instr:
+        parts.append(lang_instr.strip())
+    parts.append("Leverage the `category` and all provided `tags` to inspire every part of your copywriting omit only tags that truly don’t fit.")
+    parts.append("Use only the metadata below to create your title, description, and all other sections.")
 
-GLOBAL CONSTRAINTS:
-• Title ≤ {config['title_word_limit']} words  
-• Subtitle ≤ {config['subtitle_word_limit']} words  
-• Description ≤ {config['description_word_limit']} words  
-• designElements keys/values from Tags (1–4 words)
+    # 1. INPUT METADATA
+    parts.append("### INPUT METADATA")
+    parts.append(f"- Category: {product['category']}")
+    parts.append(f"- Tags: [{', '.join(product['tags'])}]")
 
-OUTPUT LANGUAGE:
-Please write the entire output in {product['language']}.
+    # 2. Constraints/Instructions
+    parts.append("### CONTENT CONSTRAINTS")
+    for section in sections:
+        key = section  # config now uses JSON keys directly
+        instruction = instructions.get(key, "")
+        limit = limits.get(key)
 
-INPUT:
-Category: {product['category']}
-Tags: {', '.join(product['tags'])}
-Tone: {product['brand_tones'][0]}
-Language: {product['language']}
+        if key == "title":
+            parts.append(f"**{key}** (≤ {limit} words): {instruction}")
+        elif isinstance(schema.get(key), list) or isinstance(schema.get(key), dict):
+            item_type = "key-value pairs" if isinstance(schema[key], dict) else "items"
+            if limit:
+                parts.append(f"**{key}** (≤ {limit} {item_type}): {instruction}")
+            else:
+                parts.append(f"**{key}**: {instruction}")
+        elif isinstance(schema.get(key), str) and limit:
+            parts.append(f"**{key}** (≤ {limit} words): {instruction}")
+        else:
+            parts.append(f"**{key}**: {instruction}")
 
-EXAMPLE OUTPUT:
-{example_json}
+    # 3. Example Output
+    parts.append("### EXAMPLE OUTPUT")
+    parts.append(f"The following example demonstrates a copy writing of {client} brand")
+    example_json = json.dumps(example.get(product["category"], example), indent=2, ensure_ascii=False)
+    parts.append(example_json)
 
-Respond ONLY with a VALID JSON object matching this schema:
-{json.dumps(schema, indent=2)}
-"""
+    # 4. Schema and Output Format
+    keys = ", ".join(schema.keys())
+    parts.append("### OUTPUT FORMAT")
+    parts.append(f"Include exactly these keys (any order): {keys}.")
+    parts.append("SCHEMA:")
+    parts.append(json.dumps(schema, indent=2))
+
+    return "\n\n".join(parts)
+
 
 def generate_content(product: dict, config: dict, example: dict) -> tuple[str,str]:
     prompt = build_prompt(product, config, example)
@@ -185,4 +201,3 @@ def generate_content(product: dict, config: dict, example: dict) -> tuple[str,st
         model = "OpenAI GPT-4o"
     
     return result, model
-

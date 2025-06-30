@@ -4,106 +4,148 @@
       "client": "KATLA",
       "category": "hoodie",
       "tags": [
-        "organic cotton", "buttery soft", "relaxed fit", "made to order",
-        "sustainable dye", "unisex", "pullover", "eco-friendly finish",
-        "machine washable", "breathable", "GOTS certified", "durable stitching",
+        "organic cotton",
+        "buttery soft",
+        "relaxed fit",
+        "made to order",
+        "sustainable dye",
+        "unisex",
+        "pullover",
+        "eco-friendly finish",
+        "machine washable",
+        "breathable",
+        "GOTS certified",
+        "durable stitching",
         "minimalist design"
-      ],
-      "brand_tones": ["earthy", "sustainable"]
+      ]
     },
     {
       "client": "KATLA",
       "category": "sweatsuit",
       "tags": [
-        "seaweed blend", "antioxidant rich", "cozy", "regenerative",
-        "Icelandic seaweed", "organic cotton", "phytonutrients",
-        "upcycled fibers", "winter weight", "soft fleece lining",
-        "health benefits", "breathable fabric"
-      ],
-      "brand_tones": ["natural", "innovative"]
+        "seaweed blend",
+        "antioxidant rich",
+        "cozy",
+        "regenerative",
+        "Icelandic seaweed",
+        "organic cotton",
+        "phytonutrients",
+        "upcycled fibers",
+        "winter weight",
+        "soft fleece lining",
+        "health benefits",
+        "breathable fabric"
+      ]
     },
     {
       "client": "KATLA",
       "category": "jumpsuit",
       "tags": [
-        "vegan silk", "sleek fit", "minimalist", "sustainable",
-        "day-to-night", "machine washable", "lightweight",
-        "adjustable straps", "fluid drape", "eco-friendly finish",
+        "vegan silk",
+        "sleek fit",
+        "minimalist",
+        "sustainable",
+        "day-to-night",
+        "machine washable",
+        "lightweight",
+        "adjustable straps",
+        "fluid drape",
+        "eco-friendly finish",
         "all-season"
-      ],
-      "brand_tones": ["elegant"]
+      ]
     },
     {
       "client": "KATLA",
       "category": "skirt",
       "tags": [
-        "washed cupro", "maxi length", "day-to-evening", "slip skirt",
-        "sustainable by-product", "unique tracking", "resale program",
-        "recycling program", "USA made", "straight hemline",
+        "washed cupro",
+        "maxi length",
+        "day-to-evening",
+        "slip skirt",
+        "sustainable by-product",
+        "unique tracking",
+        "resale program",
+        "recycling program",
+        "USA made",
+        "straight hemline",
         "relaxed fit"
-      ],
-      "brand_tones": ["ethical", "transparent"]
+      ]
     },
     {
       "client": "KATLA",
       "category": "tank",
       "tags": [
-        "silky modal", "lightweight", "cropped fit", "sustainably sourced",
-        "day-to-night", "layering piece", "breathable", "low-impact dye",
-        "soft touch", "minimal seams"
-      ],
-      "brand_tones": ["clean"]
+        "silky modal",
+        "lightweight",
+        "cropped fit",
+        "sustainably sourced",
+        "day-to-night",
+        "layering piece",
+        "breathable",
+        "low-impact dye",
+        "soft touch",
+        "minimal seams"
+      ]
     },
     {
-      "client": "ZARA",
-      "category": "dress",
+      "client": "EMOM",
+      "category": "modena buxur",
       "tags": [
-        "belted", "midi", "round neck", "short sleeves",
-        "cotton blend", "side vents", "figure-flattering",
-        "machine washable", "casual chic", "lightweight",
-        "layerable"
-      ],
-      "brand_tones": ["fashion-forward"]
+        "mjúkt bómullarefni",
+        "anda vel",
+        "endingargóðar",
+        "renndur vasi",
+        "teygjanlegar",
+        "þægilegar",
+        "henta fyrir æfingu",
+        "henta hversdags",
+        "henta yfir leggings",
+        "henta yfir stuttbuxur",
+        "halda sér vel"
+      ]
     },
     {
-      "client": "ZARA",
-      "category": "jeans",
+      "client": "EMOM",
+      "category": "buxur og stuttbuxur",
       "tags": [
-        "low-rise", "straight leg", "TRF", "denim", "5-pocket",
-        "stretch", "casual", "stone wash", "mid-blue",
-        "youthful", "versatile"
-      ],
-      "brand_tones": ["casual"]
+        "Aðsniðið",
+        "Meðalháar",
+        "Hátt mittisbelti",
+        "Blaktvasar",
+        "Síðar",
+        "Beinn",
+        "Sport",
+        "Bómull",
+        "Ofið",
+        "Engin teygja",
+        "kaldur handþvottur",
+        "venjuleg stærð"
+      ]
     },
-    {
-      "client": "ZARA",
-      "category": "shirt",
+     {
+      "client": "EMOM",
+      "category": "samfestingar",
       "tags": [
-        "flowing", "bow detail", "elegant", "button-up",
-        "lightweight", "long sleeves", "office-ready",
-        "layerable", "breathable fabric", "tailored"
-      ],
-      "brand_tones": ["chic"]
-    },
-    {
-      "client": "ZARA",
-      "category": "blouse",
-      "tags": [
-        "ruffled collar", "satin finish", "feminine touch", "lightweight",
-        "machine washable", "summer essential", "pearl buttons",
-        "flowy silhouette", "semi-sheer"
-      ],
-      "brand_tones": ["delicate"]
-    },
-    {
-      "client": "ZARA",
-      "category": "t-shirt",
-      "tags": [
-        "crew neck", "cotton", "graphic print", "relaxed fit",
-        "short sleeves", "layering piece", "casual", "everyday wear",
-        "breathable", "machine washable"
-      ],
-      "brand_tones": ["urban"]
+        "Aðsniðið",
+        "V hálsmál",
+        "Beinar",
+        "Þröngur í mitti",
+        "Sequins",
+        "Op að aftan með hnappi",
+        "Falinn rennilás",
+        "Opið bak ",
+        "Ökkla",
+        "Beinn",
+        "Formlegt",
+        "Partý eða kvöldfatnaður",
+        "Prjónað",
+        "Pólýester",
+        "Mjög teygjanlegt",
+        "kaldur handþvottur",
+        "venjuleg stærð"
+
+      ]
     }
   ]
 }
+ 

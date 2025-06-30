@@ -47,30 +47,29 @@ product['language'] = language
 model_note = "GROQ LLaMA 3 70B" if language == "English" else "OpenAI GPT-4o"
 st.sidebar.markdown(f"**↳ This language will use:** {model_note}")
 
-# Editable Tone
-st.sidebar.markdown("---")
-st.sidebar.markdown("**Brand Tone**")
-tone = st.sidebar.text_input("Tone", value=product['brand_tones'][0])
-product['brand_tones'] = [tone]
 
 # Word-limit overrides
 st.sidebar.markdown("---")
 st.sidebar.markdown("**Word Limits**")
 config = load_client_config(client)
-title_limit = st.sidebar.number_input("Title max words", min_value=1, value=config['title_word_limit'])
-sub_limit = st.sidebar.number_input("Subtitle max words", min_value=0, value=config['subtitle_word_limit'])
-desc_limit = st.sidebar.number_input("Description max words", min_value=20, value=config['description_word_limit'])
-config.update({
-    'title_word_limit': title_limit,
-    'subtitle_word_limit': sub_limit,
-    'description_word_limit': desc_limit
-})
+
+# Pull the existing limits dict (e.g. {"title": 7, "subtitle": 6, ...})
+limits = config.get("limits", {})
+new_limits = {}
+
+for field, default in limits.items():
+    # Turn "productDetails" → "Product Details max words"
+    label = f"{field.replace('_', ' ').title()} max words"
+    min_val = 0 if field != "title" else 1
+    new_limits[field] = st.sidebar.number_input(label, min_value=min_val, value=default)
+
+# Save back into config so our build_prompt sees the updated limits
+config["limits"] = new_limits
 
 # Display selected metadata
 st.markdown(f"**Client:** {client}")
 st.markdown(f"**Category:** {product['category'].title()}")
 st.markdown(f"**Tags:** {', '.join(product['tags'])}")
-st.markdown(f"**Tone:** {tone}")
 
 # Load examples and config
 examples = load_client_examples(client)
@@ -88,28 +87,40 @@ if st.button("Generate Title & Description"):
         st.code(raw)
         st.stop()
     else:
-        # Title & Subtitle
+    # Render every field according to the client’s schema & sections
         st.info(f"Using model: **{used_model}**")
+
+        # 1) Title (always first)
         st.markdown(f"**{result.get('title','')}**")
-        subtitle = result.get('subtitle','')
-        if subtitle:
-            st.markdown(subtitle)
 
-        # Product Details
-        details = result.get('productDetails','')
-        if details:
-            st.markdown("### Product Details")
-            st.write(details)
+        # 2) Optional subtitle
+        if "subtitle" in result and result["subtitle"]:
+            st.markdown(result["subtitle"])
 
-        # Design Elements
-        design = result.get('designElements', {})
-        if design:
-            st.markdown("### Design elements")
-            for key, val in design.items():
-                st.write(f"{key}: {val}")
+        # 3) Now render each of the remaining schema keys under the matching section heading
+        schema    = config["schema"]
+        sections  = config.get("sections", [])
 
-        # About the Fabric
-        fabric = result.get('aboutTheFabric','')
-        if fabric:
-            st.markdown("### About the Fabric")
-            st.write(fabric)
+        # build an ordered list of keys without title/subtitle
+        remaining_keys = [k for k in schema.keys() if k not in ("title", "subtitle")]
+
+        for section_name, key in zip(sections, remaining_keys):
+            value = result.get(key)
+            if not value:
+                continue
+
+            st.markdown(f"### {section_name}")
+
+            # dict → key: value lines
+            if isinstance(value, dict):
+                for subk, subv in value.items():
+                    st.write(f"{subk}: {subv}")
+
+            # list → bullet list
+            elif isinstance(value, list):
+                for item in value:
+                    st.write(f"- {item}")
+
+            # string → plain paragraph
+            else:
+                st.write(value)
