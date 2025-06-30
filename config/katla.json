@@ -1,35 +1,31 @@
 {
   "client_name": "KATLA",
-  "brand_description":"KATLA crafts sustainable, minimalist apparel from premium natural fibers, blending Nordic design with ethical production.",
+  "brand_description": "KATLA crafts sustainable, minimalist apparel from premium natural fibers, blending Nordic design with ethical production.",
   "sections": [
     "productDetails",
     "designElements",
     "aboutTheFabric"
   ],
-
   "schema": {
     "title": "string",
     "subtitle": "string",
     "productDetails": "string",
-    "designElements": {"<key>": "<value>"},
+    "designElements": {
+      "<key>": "<value>"
+    },
     "aboutTheFabric": "string"
   },
-
   "instructions": {
-    "title":        "ALL CAPS, highlight main feature.",
-    "subtitle":     "Brief phrase with fabric and type.",
-    "productDetails":
-                    "Describe the product details in up to {limits[productDetails]} words.",
-    "designElements":
-                    "List design elements as key: value pairs (1–4 words).",
-    "aboutTheFabric":
-                    "Explain the fabric in up to {limits[aboutTheFabric]} words."
+    "title": "ALL CAPS, highlight main feature (up to {limits[title]} words).",
+    "subtitle": "Brief phrase with fabric and type.",
+    "productDetails": "Describe the product details in up to {limits[productDetails]} words.",
+    "designElements": "List design elements as key: value pairs (1–4 words).",
+    "aboutTheFabric": "Explain the fabric in up to {limits[aboutTheFabric]} words."
   },
-
   "limits": {
-    "title": 5,
+    "title": 6,
     "subtitle": 6,
-    "productDetails": 150,
+    "productDetails": 10,
     "designElements": 6,
     "aboutTheFabric": 100
   }

@@ -129,13 +129,18 @@ def call_gpt4o_mini(prompt: str) ->str:
 
 def build_prompt(product: dict, config: dict, example: dict) -> str:
     schema       = config["schema"]
-    sections     = config.get("sections", [])
-    client   = config.get("client_name", "")
-    instructions = config.get("instructions", {})
+    sections     = config.get("sections", []) or list(schema.keys())
+    client       = config.get("client_name", "")
+    raw_instructions = config.get("instructions", {})
     limits       = config.get("limits", {})
     lang_instr   = config.get("language_instructions", "")
     brand_desc   = config.get("brand_description", "")
     lang         = product["language"].lower()
+
+    # Ensure all schema keys are included in sections
+    for key in schema:
+        if key not in sections:
+            sections.append(key)
 
     parts: list[str] = []
 
@@ -155,21 +160,26 @@ def build_prompt(product: dict, config: dict, example: dict) -> str:
 
     # 2. Constraints/Instructions
     parts.append("### CONTENT CONSTRAINTS")
-    for section in sections:
-        key = section  # config now uses JSON keys directly
-        instruction = instructions.get(key, "")
+    for key in sections:
+        schema_type = schema.get(key)
+        raw_instruction = raw_instructions.get(key, "")
+        instruction = raw_instruction.format(limits=limits) if "{limits" in raw_instruction else raw_instruction
         limit = limits.get(key)
 
-        if key == "title":
+        if isinstance(schema_type, str) and limit:
             parts.append(f"**{key}** (≤ {limit} words): {instruction}")
-        elif isinstance(schema.get(key), list) or isinstance(schema.get(key), dict):
-            item_type = "key-value pairs" if isinstance(schema[key], dict) else "items"
+        elif isinstance(schema_type, dict):
+            item_type = "key-value pairs"
             if limit:
                 parts.append(f"**{key}** (≤ {limit} {item_type}): {instruction}")
             else:
                 parts.append(f"**{key}**: {instruction}")
-        elif isinstance(schema.get(key), str) and limit:
-            parts.append(f"**{key}** (≤ {limit} words): {instruction}")
+        elif isinstance(schema_type, list):
+            item_type = "items"
+            if limit:
+                parts.append(f"**{key}** (≤ {limit} {item_type}): {instruction}")
+            else:
+                parts.append(f"**{key}**: {instruction}")
         else:
             parts.append(f"**{key}**: {instruction}")
 

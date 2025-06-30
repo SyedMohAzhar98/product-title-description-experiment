@@ -53,18 +53,20 @@ st.sidebar.markdown("---")
 st.sidebar.markdown("**Word Limits**")
 config = load_client_config(client)
 
-# Pull the existing limits dict (e.g. {"title": 7, "subtitle": 6, ...})
 limits = config.get("limits", {})
 new_limits = {}
 
 for field, default in limits.items():
-    # Turn "productDetails" → "Product Details max words"
     label = f"{field.replace('_', ' ').title()} max words"
     min_val = 0 if field != "title" else 1
     new_limits[field] = st.sidebar.number_input(label, min_value=min_val, value=default)
 
-# Save back into config so our build_prompt sees the updated limits
 config["limits"] = new_limits
+
+
+config_path = f"config/{client.lower()}.json"
+with open(config_path, "w", encoding="utf-8") as f:
+    json.dump(config, f, indent=2, ensure_ascii=False)
 
 # Display selected metadata
 st.markdown(f"**Client:** {client}")
