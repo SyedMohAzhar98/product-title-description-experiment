@@ -148,18 +148,29 @@ def build_prompt(product: dict, config: dict, example: dict) -> str:
     if brand_desc:
         parts.append(brand_desc.strip())
     parts.append("You are a product‑copywriter. OUTPUT ONLY valid JSON—no extra text.")
-    if lang == "icelandic" and lang_instr:
-        parts.append(lang_instr.strip())
-    parts.append("Leverage the `category` and all provided `features` to inspire every part of your copy—omit only those that truly don’t fit.")
+    if lang == "icelandic":
+        parts.append(
+            "You are an expert Icelandic fashion copywriter. OUTPUT ONLY valid JSON.\n"
+            "Follow these strict rules:\n"
+            "1. Use correct, established Icelandic and no invented words, calqued English, or anglicisms.\n"
+            "2. Map product features to proper Icelandic terms and compound nouns.\n"
+            "3. Ensure all adjectives agree in gender, number & case.\n"
+            "4. Tone: factual, formal, catalog‑style—no emotional or promotional phrasing.\n"
+            "5. Titles: only Icelandic nouns or noun phrases (no standalone adjectives).\n"
+            "6. Use correct Icelandic spelling and diacritics."
+        )
+
+
+    parts.append("Leverage the `product type` and all provided `features & attributes` to inspire every part of your copy—omit only those that truly don’t fit.")
     parts.append("Use only the metadata below to create your title, description, and all other sections.")
 
     # 1. INPUT METADATA
     parts.append("### INPUT METADATA")
-    parts.append(f"- Category: {product['category']}")
-      # Features
-    parts.append("### FEATURES")
+    parts.append(f"- Product Type: {product['category']}")
+    parts.append("### FEATURES & ATTRIBUTES")
     for feat_name, feat_val in product.get("features", {}).items():
         parts.append(f"- {feat_name}: {feat_val}")
+
 
     # 2. Constraints/Instructions
     parts.append("### CONTENT CONSTRAINTS")
@@ -185,12 +196,6 @@ def build_prompt(product: dict, config: dict, example: dict) -> str:
                 parts.append(f"**{key}**: {instruction}")
         else:
             parts.append(f"**{key}**: {instruction}")
-
-    # 3. Example Output
-    parts.append("### EXAMPLE OUTPUT")
-    parts.append(f"The following example demonstrates a copy writing of {client} brand")
-    example_json = json.dumps(example.get(product["category"], example), indent=2, ensure_ascii=False)
-    parts.append(example_json)
 
     # 4. Schema and Output Format
     keys = ", ".join(schema.keys())

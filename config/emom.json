@@ -19,9 +19,8 @@
     "keyFeatures": "List the key features as bullet points ({limits[keyFeatures]} words each)."
   },
   "limits": {
-    "title": 5,
+    "title": 4,
     "productDescription": 250,
     "keyFeatures": 5
-  },
-  "language_instructions": "Use Iceladic Language with proper Icelandic grammar and avoid anglicisms."
+  }
 }

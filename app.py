@@ -88,7 +88,10 @@ for k, v in product.get("features", {}).items():
 
 # Load examples and config
 examples = load_client_examples(client)
+print(f"client examples{examples}")
 example = get_example_for_category(examples, category)
+print(f"get_example_for_category {example}")
+
 
 # Generate and render
 if st.button("Generate Title & Description"):

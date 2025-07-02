@@ -1,50 +1,94 @@
 {
   "products": [
-    {
-      "client": "KATLA",
-      "category": "blazer",
+  {
+    "client":"emom",
+    "category": "blazer",
+    "features": {
+      "Lengd erma": "Langar ermar",
+      "Ermastíll": "Ísetter ermar",
+      "Axlir": "Axlapúðar",
+      "Hálsmál": "V kragi",
+      "Kragi": "Smokingkragi",
+      "Framhluti": "Opin/n að framan",
+      "Tegund vasa": "Hliðarvasi",
+      "Lengd": "Mjaðmir",
+      "Faldur": "Opinn rúnaður",
+      "Mynsturstærð": "Lítið",
+      "Mynstur": "Blóma",
+      "Tilefni": "Skrifstofufatnaður",
+      "Efni": "Pólýester",
+      "Vefnaður": "Ofið",
+      "Notkun": "Hversdagslegt, Formlegt",
+      "Teygjustig": "Engin teygja",
+      "Þvottaleiðbeiningar": "kaldur handþvottur",
+      "Stærð": "venjuleg stærð",
+      "Notkunareiginleiki": "létt"
+    }
+  },
+  {
+    "client":"katla",
+    "category": "Toppur",
+    "features": {
+      "Lengd erma": "Langar ermar",
+      "Ermastíll": "Ísetter ermar",
+      "Axlir": "Púff eiginleiki",
+      "Hálsmál": "Skorinn kragi",
+      "Framhluti": "Hneppt",
+      "Ermalíning": "Hneppt",
+      "Faldur": "Styttri að framan",
+      "Mynsturstærð": "Lítið",
+      "Mynstur": "Dýraprent",
+      "Tilefni": "Formlegt",
+      "Efni": "Pólýester",
+      "Vefnaður": "Ofið",
+      "Teygjustig": "Engin teygja",
+      "Þvottaleiðbeiningar": "kaldur handþvottur",
+      "Stærð": "venjuleg stærð",
+      "Notkun": "Partý eða kvöldfatnaður"
+    }
+  },
+  {
+      "client": "emom",
+      "category": "sweater",
       "features": {
-        "Lengd erma": "Langar ermar",
-        "Ermastíll": "Ísetter ermar",
-        "Axlir": "Axlapúðar",
-        "Hálsmál": "V kragi",
-        "Kragi": "Smokingkragi",
-        "Framhluti": "Opin/n að framan",
-        "Tegund vasa": "Hliðarvasi",
-        "lengd": "Mjaðmir",
-        "Faldur": "Opinn rúnaður",
-        "Mynsturstærð": "Lítið",
-        "Mynstur": "Blóma",
-        "Tilefni": "Skrifstofufatnaður",
-        "Efni": "Pólýester",
-        "Vefnaður": "Ofið",
-        "Teygjustig": "Engin teygja",
-        "Þvottaleiðbeiningar": "kaldur handþvottur",
-        "Stærð": "venjuleg stærð",
-        "Notkunareiginleiki": "létt"
+        "Sleeve style": "Drop shoulders",
+        "Sleeve length": "Long sleeves",
+        "Fit": "Cropped",
+        "Neck detailing": "Scoop",
+        "Front of the bodice": "Partial button placket",
+        "Cuffs": "Ribbed knit",
+        "Length": "Waist",
+        "Hem": "Ribbed",
+        "Pattern size": "Medium",
+        "Pattern": "Checks/Plaids",
+        "Occassion": "Casual",
+        "Material": "Nylon",
+        "Fabric": "Knitted",
+        "Stretch level": "Super Stretch",
+        "Care instructions": "Hand Wash Cold",
+        "Size": "True to size"
       }
     },
     {
-      "client": "EMOM",
-      "category": "top",
+      "client": "katla",
+      "category": "Jumpsuit",
       "features": {
-        "Lengd erma": "Langar ermar",
-        "Ermastíll": "Ísetter ermar",
-        "Axlir": "Púff eiginleiki",
-        "Hálsmál": "Skorinn kragi",
-        "Framhluti": "Hneppt",
-        "Ermalíning": "Hneppt",
-        "Faldur": "Styttri að framan",
-        "Mynsturstærð": "Lítið",
-        "Mynstur": "Dýraprent",
-        "Tilefni": "Formlegt",
-        "Partý eða kvöldfatnaður": "Partý eða kvöldfatnaður",
-        "Efni": "Pólýester",
-        "Vefnaður": "Ofið",
-        "Teygjustig": "Engin teygja",
-        "Þvottaleiðbeiningar": "kaldur handþvottur",
-        "Stærð": "venjuleg stær"
+        "Fit": "Fitted",
+        "Shoulder details": "Tie straps",
+        "Neck detailing": "V neck",
+        "Shape": "Baggy wide",
+        "Waist": "Elastic waistband",
+        "Pocket Construction": "Side seam",
+        "Pant Length": "Ankle",
+        "Hem": "Flounced",
+        "Occassion": "Casual",
+        "Material": "Modal",
+        "Fabric": "Knitted",
+        "Stretch level": "Super Stretch",
+        "Care instructions": "Hand Wash Cold",
+        "Size": "True to size"
       }
     }
-  ]
+]
 }
+
